@@ -9,7 +9,11 @@
     <ul>
         <% for (let post of posts){%>
         <li>
-            <a href="/posts/<%= post._id %>"><%= post.title %>,  <%= post.description %></a>
+            <a href="/posts/<%= post._id %>">
+                <!-- <img src="<%= post.image%>" alt=""> -->
+                <img src="https://source.unsplash.com/collection/483251" width="250px" alt="">
+                <%= post.title %>,  
+                <%= post.description %></a>
         </li>
         <% } %>
     </ul>

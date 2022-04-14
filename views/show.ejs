@@ -1,6 +1,7 @@
 <% layout('layout/boilerplate') %>
 
     <h1><%= posts.title %></h1>
+    <img src="https://source.unsplash.com/collection/483251" width="250px" alt="">
     <h2><%= posts.description %></h2>
 
     <form action="/posts/<%=posts._id%>?_method=DELETE" method="POST">
