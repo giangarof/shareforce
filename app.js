@@ -4,6 +4,8 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 
 const db = require('./mongo/connection');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/expressError');
 const Post = require('./models/modelPost');
 
 const app = express();
@@ -20,42 +22,54 @@ app.get('/', (req,res) => {
     res.render('home');
 });
 
-app.get('/posts', async (req,res) => {
+app.get('/posts', catchAsync (async (req,res) => {
     const posts = await Post.find({});
     res.render('posts', { posts });
-});
+}));
 
 app.get('/posts/new', (req,res) => {
     res.render('new')
 })
 
-app.post('/posts', async (req,res) => {
-    const post = new Post(req.body.posts)
-    await post.save();
-    res.redirect(`/posts/${post._id}`)
-})
+app.post('/posts', catchAsync (async (req,res) => {
+    if(!req.body.posts) throw new ExpressError('Invalid data', 400);
+        const post = new Post(req.body.posts)
+        await post.save();
+        res.redirect(`/posts/${post._id}`)
+}));
 
-app.get('/posts/:id', async (req,res) => {
+app.get('/posts/:id', catchAsync (async (req,res) => {
     const posts = await Post.findById(req.params.id);
     res.render('show', { posts });
-})
+}));
 
-app.get('/posts/:id/update', async (req, res) => {
+app.get('/posts/:id/update', catchAsync (async (req, res) => {
     const posts = await Post.findById(req.params.id);
     res.render('edit', { posts });
-})
+}));
 
-app.put('/posts/:id', async (req,res) => {
+app.put('/posts/:id', catchAsync (async (req,res) => {
     const {id} = req.params;
     const post = await Post.findByIdAndUpdate(id, {...req.body.posts});
     res.redirect(`/posts/${post._id}`)
-})
+}));
 
-app.delete('/posts/:id', async (req,res) => {
+app.delete('/posts/:id', catchAsync (async (req,res) => {
     const {id} = req.params;
     const post = await Post.findByIdAndDelete(id);
     res.redirect('/posts');
-})
+}));
+
+app.all('*', (req,res,next) => {
+    next(new ExpressError('Page Not Found', 404))
+});
+
+app.use((err, req, res, next) => {
+    const {statusCode = 500} = err
+    if(!err.msg) { err.msg = 'Something went wrong'}
+    
+    res.status(statusCode).render('error', { err })
+});
 
 app.listen(PORT, () => {
     console.log('connected');
