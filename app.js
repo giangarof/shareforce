@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const methodOverride = require('method-override');
+const ejsMate = require('ejs-mate');
 
 const db = require('./mongo/connection');
 const Post = require('./models/modelPost');
@@ -8,6 +9,7 @@ const Post = require('./models/modelPost');
 const app = express();
 const PORT = process.env.port || 3000;
 
+app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
