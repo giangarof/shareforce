@@ -6,7 +6,9 @@ const ejsMate = require('ejs-mate');
 const db = require('./mongo/connection');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/expressError');
+const { postSchema } = require('./utils/schema')
 const Post = require('./models/modelPost');
+const { required } = require('joi');
 
 const app = express();
 const PORT = process.env.port || 3000;
@@ -17,6 +19,17 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
+
+const validatePost = (req, res, next) => {
+    
+    const { error } = postSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else{
+        next();
+    }
+}
 
 app.get('/', (req,res) => {
     res.render('home');
@@ -31,8 +44,12 @@ app.get('/posts/new', (req,res) => {
     res.render('new')
 })
 
-app.post('/posts', catchAsync (async (req,res) => {
-    if(!req.body.posts) throw new ExpressError('Invalid data', 400);
+app.post('/posts', validatePost, catchAsync (async (req,res) => {
+        const {error} = postSchema.validate(req.body);
+        if(result.error){
+            const msg = error.details.map(el => el.message).join(',')
+            throw new ExpressError(msg, 400)
+        }
         const post = new Post(req.body.posts)
         await post.save();
         res.redirect(`/posts/${post._id}`)
