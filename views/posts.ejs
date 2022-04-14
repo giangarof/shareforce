@@ -6,14 +6,19 @@
         <a href="/posts/new">Add</a>
     </div>
 
-    <ul>
         <% for (let post of posts){%>
-        <li>
-            <a href="/posts/<%= post._id %>">
-                <!-- <img src="<%= post.image%>" alt=""> -->
-                <img src="https://source.unsplash.com/collection/483251" width="250px" alt="">
-                <%= post.title %>,  
-                <%= post.description %></a>
-        </li>
+            <div class="card mb-3">
+                <div class="row">
+                    <div class="col-md-4" style="width: 300px;">
+                        <img src="<%=post.image%>" width="100%" class="img-fluid" alt="">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h4 class="card-title"><%=post.title%></h4>
+                            <p class="card-text"><%=post.description%></p>
+                        </div>
+                        <a class="btn btn-primary" href="/posts/<%=post._id%>">See here</a>
+                    </div>
+                </div>
+            </div>
         <% } %>
-    </ul>

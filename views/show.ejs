@@ -1,15 +1,22 @@
 <% layout('layout/boilerplate') %>
 
-    <h1><%= posts.title %></h1>
-    <img src="https://source.unsplash.com/collection/483251" width="250px" alt="">
-    <h2><%= posts.description %></h2>
-
-    <form action="/posts/<%=posts._id%>?_method=DELETE" method="POST">
-        <button>Delete</button>
-    </form>
-    <footer>
-    
-        <a href="/posts">All posts</a>
-        <a href="/posts/<%=posts._id%>/update">Update</a>
-
-    </footer>
+<div class="row mb-5">
+    <div class="col-6 offset-3">
+        <div class="card">
+            <img src="<%=posts.image%>" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title"><%= posts.title %></h5>
+              <p class="card-text"><%= posts.description %></p>
+            </div>
+            <ul class="list-group list-group-flush">
+            </ul>
+            <div class="card-body">
+                <a href="/posts" class="btn btn-primary">All posts</a>
+                <a href="/posts/<%=posts._id%>/update" class="btn btn-warning">Update</a>
+                <form class="d-inline" action="/posts/<%=posts._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+          </div>
+    </div>
+</div>
