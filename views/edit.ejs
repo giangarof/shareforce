@@ -7,21 +7,21 @@
         <form action="/posts/<%=posts._id%>?_method=PUT" method="POST" novalidate class="validated-form">
             <div class="mb-3">
                 <label class="form-label" for="title">What are you thinking?</label>
-                <input class="form-control" type="text" id="title" name="posts[title]" value="<%=posts.title%>" required>
+                <input class="form-control" type="text" id="title" name="post[title]" value="<%=posts.title%>" required>
                 <div class="valid-feedback">
                     Looks Good!
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="description">Add some description</label>
-                <input class="form-control" type="text" id="description" name="posts[description]" value="<%=posts.description%>" required>
+                <input class="form-control" type="text" id="description" name="post[description]" value="<%=posts.description%>" required>
                 <div class="valid-feedback">
                     Looks Good!
                 </div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="image">Add image</label>
-                <input class="form-control" type="text" id="image" name="posts[image]" value="<%= posts.image%>" required>
+                <input class="form-control" type="text" id="image" name="post[image]" value="<%= posts.image%>" required>
                 <div class="valid-feedback">
                     Looks Good!
                 </div>

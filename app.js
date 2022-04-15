@@ -4,7 +4,7 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 
 const catchAsync = require('./utils/catchAsync');
-const ExpressError = require('./utils/expressError');
+const ExpressError = require('./utils/ExpressError');
 const { postSchema, reviewSchema } = require('./utils/schema');
 const Post = require('./models/modelPost');
 const Review = require('./models/modelReview');
@@ -21,15 +21,11 @@ app.use(express.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
 
 const validatePost = (req, res, next) => {
-    
     const { error } = postSchema.validate(req.body);
     if(error){
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
-    } else{
-        next();
-    }
-
+    } else{ next() }
 }
 
 const validateReview = (req, res, next) => {
@@ -59,11 +55,11 @@ app.get('/posts/new', (req,res) => {
 
 app.post('/posts', validatePost, catchAsync (async (req,res) => {
         const {error} = postSchema.validate(req.body);
-        if(result.error){
+        if(error){
             const msg = error.details.map(el => el.message).join(',')
             throw new ExpressError(msg, 400)
         }
-        const post = new Post(req.body.posts)
+        const post = new Post(req.body.post)
         await post.save();
         res.redirect(`/posts/${post._id}`)
 }));
@@ -79,19 +75,21 @@ app.get('/posts/:id/update', catchAsync (async (req, res) => {
     res.render('edit', { posts });
 }));
 
-app.put('/posts/:id', catchAsync (async (req,res) => {
+app.put('/posts/:id', validatePost, catchAsync (async (req,res) => {
     const {id} = req.params;
-    const post = await Post.findByIdAndUpdate(id, {...req.body.posts});
+    const post = await Post.findByIdAndUpdate(id, {...req.body.post});
     res.redirect(`/posts/${post._id}`)
 }));
 
 app.delete('/posts/:id', catchAsync (async (req,res) => {
     const {id} = req.params;
-    const post = await Post.findByIdAndDelete(id);
+    await Post.findByIdAndDelete(id);
     res.redirect('/posts');
 }));
 
-app.post('/posts/:id/comment', validateReview, catchAsync(async(req, res) => {
+//comments
+
+app.post('/posts/:id/review', validateReview, catchAsync(async(req, res) => {
     const post = await Post.findById(req.params.id);
     const review = new Review(req.body.review);
     post.reviews.push(review);
@@ -99,6 +97,13 @@ app.post('/posts/:id/comment', validateReview, catchAsync(async(req, res) => {
     await post.save();
     res.redirect(`/posts/${post._id}`)
 }));
+
+app.delete('/posts/:id/review/:reviewId', catchAsync(async(req,res) => {
+    const {id, reviewId } = req.params;
+    await Post.findByIdAndUpdate(id, {$pull: {review: reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/posts/${id}`)
+}))
 
 app.all('*', (req,res,next) => {
     next(new ExpressError('Page Not Found', 404))
