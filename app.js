@@ -3,13 +3,13 @@ const path = require('path');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 
-const db = require('./mongo/connection');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/expressError');
-const { postSchema } = require('./utils/schema')
+const { postSchema, reviewSchema } = require('./utils/schema');
 const Post = require('./models/modelPost');
-const { required } = require('joi');
+const Review = require('./models/modelReview');
 
+const db = require('./mongo/connection');
 const app = express();
 const PORT = process.env.port || 3000;
 
@@ -29,6 +29,19 @@ const validatePost = (req, res, next) => {
     } else{
         next();
     }
+
+}
+
+const validateReview = (req, res, next) => {
+    const {err} = reviewSchema.validate(req.body);
+    
+    if(err){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    } else{
+        next();
+    }
+
 }
 
 app.get('/', (req,res) => {
@@ -56,7 +69,8 @@ app.post('/posts', validatePost, catchAsync (async (req,res) => {
 }));
 
 app.get('/posts/:id', catchAsync (async (req,res) => {
-    const posts = await Post.findById(req.params.id);
+    const posts = await Post.findById(req.params.id).populate('reviews');
+    console.log(posts)
     res.render('show', { posts });
 }));
 
@@ -75,6 +89,15 @@ app.delete('/posts/:id', catchAsync (async (req,res) => {
     const {id} = req.params;
     const post = await Post.findByIdAndDelete(id);
     res.redirect('/posts');
+}));
+
+app.post('/posts/:id/comment', validateReview, catchAsync(async(req, res) => {
+    const post = await Post.findById(req.params.id);
+    const review = new Review(req.body.review);
+    post.reviews.push(review);
+    await review.save();
+    await post.save();
+    res.redirect(`/posts/${post._id}`)
 }));
 
 app.all('*', (req,res,next) => {
