@@ -4,11 +4,15 @@ const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const passportLocal = require('passport-local');
 
 const ExpressError = require('./utils/ExpressError');;
 
+const userRoutes = require('./routes/user')
 const postRoutes = require('./routes/posts');
-const reviewRoutes = require('./routes/reviews')
+const reviewRoutes = require('./routes/reviews');
+const User = require('./models/modelUser');
 
 const db = require('./mongo/connection');
 const app = express();
@@ -34,6 +38,11 @@ const sessionConfig = {
 }
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new passportLocal(User.authenticate()))
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //flash middleware
 app.use((req, res, next) => {
@@ -42,12 +51,16 @@ app.use((req, res, next) => {
     next()
 })
 
-
 app.use('/posts', postRoutes);
 app.use('/posts/:id/review', reviewRoutes);
 
+app.use('/', userRoutes);
+
 app.get('/', (req,res) => {
     res.render('home');
+});
+app.get('/profile', (req,res) => {
+    res.render('profile');
 });
 
 app.all('*', (req,res,next) => {

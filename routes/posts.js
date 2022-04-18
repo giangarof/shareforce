@@ -4,6 +4,7 @@ const methodOverride = require('method-override');
 const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError');
 const { postSchema } = require('../utils/schema');
+const {isLoggedIn} = require('../middleware/middleware')
 
 
 const Post = require('../models/modelPost');
@@ -23,18 +24,18 @@ router.get('/', catchAsync (async (req,res) => {
     res.render('posts', { posts });
 }));
 
-router.get('/new', (req,res) => {
+router.get('/new', isLoggedIn, (req,res) => {
     res.render('new')
 })
 
-router.post('/', validatePost, catchAsync (async (req,res) => {
+router.post('/', isLoggedIn, validatePost, catchAsync (async (req,res) => {
     const post = new Post(req.body.post);
     await post.save();
     req.flash('success', 'Post created!');
     res.redirect(`/posts/${post._id}`);
 }));
 
-router.get('/:id', catchAsync (async (req,res) => {
+router.get('/:id', isLoggedIn, catchAsync (async (req,res) => {
     const posts = await Post.findById(req.params.id).populate('reviews');
     if(!posts){
         req.flash('error', 'Cannot find post');
@@ -44,7 +45,7 @@ router.get('/:id', catchAsync (async (req,res) => {
     res.render('show', { posts });
 }));
 
-router.get('/:id/update', catchAsync (async (req, res) => {
+router.get('/:id/update', isLoggedIn, catchAsync (async (req, res) => {
     const posts = await Post.findById(req.params.id);
     res.render('edit', { posts });
 }));
