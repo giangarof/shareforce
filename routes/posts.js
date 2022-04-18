@@ -28,18 +28,18 @@ router.get('/new', (req,res) => {
 })
 
 router.post('/', validatePost, catchAsync (async (req,res) => {
-        const {error} = postSchema.validate(req.body);
-        if(error){
-            const msg = error.details.map(el => el.message).join(',')
-            throw new ExpressError(msg, 400)
-        }
-        const post = new Post(req.body.post)
-        await post.save();
-        res.redirect(`/posts/${post._id}`)
+    const post = new Post(req.body.post);
+    await post.save();
+    req.flash('success', 'Post created!');
+    res.redirect(`/posts/${post._id}`);
 }));
 
 router.get('/:id', catchAsync (async (req,res) => {
     const posts = await Post.findById(req.params.id).populate('reviews');
+    if(!posts){
+        req.flash('error', 'Cannot find post');
+        return res.redirect('/posts')
+    }
     console.log(posts)
     res.render('show', { posts });
 }));
@@ -52,12 +52,14 @@ router.get('/:id/update', catchAsync (async (req, res) => {
 router.put('/:id', validatePost, catchAsync (async (req,res) => {
     const {id} = req.params;
     const post = await Post.findByIdAndUpdate(id, {...req.body.post});
+    req.flash('success', 'Your post has been updated!')
     res.redirect(`/posts/${post._id}`)
 }));
 
 router.delete('/:id', catchAsync (async (req,res) => {
     const {id} = req.params;
     await Post.findByIdAndDelete(id);
+    req.flash('success', 'Your post has been deleted!')
     res.redirect('/posts');
 }));
 
