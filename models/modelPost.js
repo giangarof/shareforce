@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const review = require('./modelReview')
+const review = require('./modelReview');
+const user = require('./modelUser')
 
 const Post = new Schema({
-    owner: String,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     title: String,
     image: String,
     description: String,
@@ -24,7 +28,7 @@ const Post = new Schema({
             type: Schema.Types.ObjectId,
             ref: 'Review'
         }
-    ]
+    ],
 });
 
 Post.post('findOneAndDelete', async function(doc){

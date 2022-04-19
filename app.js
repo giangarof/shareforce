@@ -60,6 +60,7 @@ app.use('/', userRoutes);
 app.get('/', (req,res) => {
     res.render('home');
 });
+
 app.get('/profile', (req,res) => {
     res.render('profile');
 });
