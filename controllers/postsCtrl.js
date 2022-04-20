@@ -1,4 +1,5 @@
 const Post = require('../models/modelPost');
+const {cloudinary} = require('../cloudinary/config');
 
 module.exports.profile = (req, res) => {
     res.render('profile')
@@ -53,13 +54,22 @@ module.exports.submitUpdate = async (req,res) => {
     const imgs = req.files.map(f => ({url: f.path, filename: f.filename}));
     post.images.push(...imgs);
     await post.save();
+    if(req.body.deleteImages){
+        for(let filename of req.body.deleteImages){
+            await cloudinary.uploader.destroy(filename)
+        }
+        await post.updateOne({$pull: {images: {filename: { $in: req.body.deleteImages}}}})
+    }
     req.flash('success', 'Your post has been updated!');
     res.redirect(`/posts/${post._id}`);
 }
 
 module.exports.delete = async (req,res) => {
     const {id} = req.params;
-    await Post.findByIdAndDelete(id);
+    const post = await Post.findByIdAndDelete(id);
+    for (let image of post.images) {
+        await cloudinary.uploader.destroy(image.filename);
+      } 
     req.flash('success', 'Your post has been deleted!')
     res.redirect('/posts');
 }
