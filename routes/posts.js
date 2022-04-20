@@ -21,7 +21,7 @@ router.get('/new', isLoggedIn, postCtrl.new);
 
 router.get('/:id', catchAsync (postCtrl.findOne));
 router.get('/:id/update', isLoggedIn, isAuthor, catchAsync (postCtrl.updateForm));
-router.put('/:id', isLoggedIn, isAuthor, validatePost, catchAsync (postCtrl.submitUpdate));
+router.put('/:id', isLoggedIn, isAuthor, upload.array('image'), validatePost, catchAsync (postCtrl.submitUpdate));
 router.delete('/:id', isLoggedIn, isAuthor, catchAsync (postCtrl.delete));
 
 

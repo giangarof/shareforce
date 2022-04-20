@@ -50,8 +50,11 @@ module.exports.updateForm = async (req, res) => {
 module.exports.submitUpdate = async (req,res) => {
     const {id} = req.params;
     const post = await Post.findByIdAndUpdate(id, {...req.body.post});
-    req.flash('success', 'Your post has been updated!')
-    res.redirect(`/posts/${post._id}`)
+    const imgs = req.files.map(f => ({url: f.path, filename: f.filename}));
+    post.images.push(...imgs);
+    await post.save();
+    req.flash('success', 'Your post has been updated!');
+    res.redirect(`/posts/${post._id}`);
 }
 
 module.exports.delete = async (req,res) => {
