@@ -15,6 +15,7 @@ module.exports.new = (req,res) => {
 
 module.exports.create = async (req,res) => {
     const post = new Post(req.body.post);
+    post.images = req.files.map(f => ({url: f.path, filename: f.filename}))
     post.author = req.user._id;
     await post.save();
     req.flash('success', 'Post created!');

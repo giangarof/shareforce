@@ -15,10 +15,7 @@ const {
     } = require('../middleware/middleware')
 
 router.get('/', catchAsync(postCtrl.index));
-// router.post('/', isLoggedIn, validatePost, catchAsync (postCtrl.create));
-router.post('/', upload.array('image'), (req, res) => {
-    res.send(req.body, req.files)
-})
+router.post('/', isLoggedIn, upload.array('image'), validatePost, catchAsync (postCtrl.create));
 router.get('/profile', postCtrl.profile);
 router.get('/new', isLoggedIn, postCtrl.new);
 

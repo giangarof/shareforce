@@ -10,8 +10,10 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary,
-    folder: 'shareforce',
-    allowedFormats: ['png', 'jpeg', 'jpg']
+    params: {
+        folder: 'shareforce',
+        allowedFormats: ['png', 'jpeg', 'jpg']
+    }
 });
 
 module.exports = {cloudinary, storage}

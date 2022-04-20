@@ -1,3 +1,4 @@
+const { string } = require('joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const review = require('./modelReview');
@@ -9,7 +10,12 @@ const Post = new Schema({
         ref: 'User'
     },
     title: String,
-    image: String,
+    images: [
+        {
+            url: String,
+            filename: String
+        }
+    ],
     description: String,
     likes: [
         {
