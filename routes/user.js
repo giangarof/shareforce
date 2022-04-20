@@ -1,45 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
+const userCtrl = require('../controllers/userCtrl');
 const User = require('../models/modelUser');
 const passport = require('passport');
 
-router.get('/register', (req, res) => {
-    res.render('user/register')
-})
+router.get('/register', userCtrl.renderRegister)
 
-router.post('/register', catchAsync (async(req,res) => {
-    try {
-        const {email, name, password, username} = req.body;
-        const newUser = new User({email, username, name});
-        const registered = await User.register(newUser, password);
-        req.login(registered, err => {
-            if(err) return next(err)
-            req.flash('success', 'Welcome to shareForce');
-            res.redirect('/')
-        })
-    } catch(e){
-        req.flash('error', e.message);
-        res.redirect('register')
-    }
-}));
+router.post('/register', catchAsync (userCtrl.createUser));
 
-router.get('/login', (req, res) => {
-    res.render('user/login')
-})
+router.get('/login', userCtrl.loginForm)
 
-router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), (req, res) => {
-    req.flash('success', `Welcome back ${req.body.username}`);
-    const redirectUrl = req.session.returnTo || '/'
-    delete req.session.returnTo;
-    res.redirect(redirectUrl);
-})
+router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), userCtrl.submitLogin)
 
-router.get('/logout', (req,res) => {
-    req.logout();
-    req.flash('success', 'See you later!')
-    res.redirect('/posts');
-})
+router.get('/logout', userCtrl.logout)
 
 
 
