@@ -16,6 +16,7 @@ const User = require('../models/modelUser')
 
 const router = express.Router();
 
+router.get('/profile', postCtrl.profile);
 router.get('/', catchAsync(postCtrl.index));
 router.get('/new', isLoggedIn, postCtrl.new);
 router.post('/', isLoggedIn, validatePost, catchAsync (postCtrl.create));

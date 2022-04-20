@@ -1,5 +1,9 @@
 const Post = require('../models/modelPost');
 
+module.exports.profile = (req, res) => {
+    res.render('profile')
+}
+
 module.exports.index = async (req,res) => {
     const posts = await Post.find({});
     res.render('posts', { posts });
