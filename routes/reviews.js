@@ -8,8 +8,9 @@ const Post = require('../models/modelPost');
 const {
     isLoggedIn,
     isAuthor,
+    isReviewAuthor,
     validatePost,
-    validateReview
+    validateReview,
     } = require('../middleware/middleware')
 
 const router = express.Router({mergeParams:true});
