@@ -4,7 +4,7 @@
     <h1 class="text-center">Add new post</h1>
     <div class="col-6 offset-3">
         
-        <form action="/posts" method="POST" class="validated-form" novalidate >
+        <form action="/posts" method="POST" class="validated-form" novalidate enctype="multipart/form-data" >
             <div class="mb-3">
                 <label class="form-label" for="title">What are you thinking?</label>
                 <input class="form-control" type="text" id="title" name="post[title]" required>
@@ -20,8 +20,8 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label class="form-label" for="image">Add image</label>
-                <input class="form-control" type="text" id="image" name="post[image]" required>
+                <!-- <label class="form-label" for="image">Add image</label> -->
+                <input class="form-control" type="file" id="image" name="image" multiple required>
                 <div class="valid-feedback">
                     Looks Good!
                 </div>
