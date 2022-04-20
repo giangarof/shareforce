@@ -2,7 +2,16 @@ const { string } = require('joi');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const review = require('./modelReview');
-const user = require('./modelUser')
+const user = require('./modelUser');
+
+const ImageSchema = new Schema({
+    url: String,
+    filename:String
+});
+
+ImageSchema.virtual('thumbnail').get(function() {
+    return this.url.replace('/upload', '/upload/w_250');
+})
 
 const Post = new Schema({
     author: {
@@ -10,12 +19,7 @@ const Post = new Schema({
         ref: 'User'
     },
     title: String,
-    images: [
-        {
-            url: String,
-            filename: String
-        }
-    ],
+    images: [ImageSchema],
     description: String,
     likes: [
         {
