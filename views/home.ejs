@@ -1,3 +1,22 @@
 <% layout('layout/boilerplate') %>
+<div class="cover-container d-flex w-100 h-100 px-3 mx-auto flex-column">
+    <div class="mb-auto">
+        <h3 class="float-md-left mb-0">ShareForce</h3>
+        <p class="lead">Welcome to ShareForce <br> 
+            This is testing website styled with bootstrap, stored with MongoDB, and  logical implemented with Javascript <br>
+            Feel free to use the website, make some posts, and explore the content that of ShareForce.
+        </p>
+        <nav class="nav nav-masthead justify-content-center float-md-right">
+            <% if (!currentUser){ %>
+                <a href="/register" class="nav-link">Register</a>
+                <a href="/login" class="nav-link">Login</a>
+                <% } else { %>
+                <a href="/posts" class="nav-link">See Posts</a>
+                <a href="/posts/new" class="nav-link">Create</a>
+                <a href="/posts/profile" class="nav-link">Profile</a>
+                <a href="/logout" class="nav-link">Logout</a>
+            <% } %>
+        </nav>
+    </div>
 
-    <h1>Hello</h1>
+</div>
