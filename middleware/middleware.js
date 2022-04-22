@@ -1,7 +1,18 @@
 const Post = require('../models/modelPost')
+const User = require('../models/modelUser')
 const Review = require('../models/modelReview')
 const ExpressError = require('../utils/ExpressError');
 const { postSchema, reviewSchema } = require('../utils/schema');
+
+module.exports.isProfile = async (req,res, next) => {
+    const {id} = req.params;
+    const user = await User.findById(id);
+    if(!user.equals(req.user._id)){
+        req.flash('error', 'You are not logged as this user')
+        return res.redirect(`/home`)
+    }
+    next();
+}
 
 module.exports.isLoggedIn = (req,res,next) => {
     console.log('user', req.user)
@@ -19,7 +30,7 @@ module.exports.validatePost = (req, res, next) => {
         const msg = error.details.map(el => el.message).join(',')
         throw new ExpressError(msg, 400)
     } else{ next() }
-}
+};
 
 module.exports.isAuthor = async (req, res, next) => {
     const {id} = req.params;
@@ -29,7 +40,7 @@ module.exports.isAuthor = async (req, res, next) => {
         return res.redirect(`/posts/${id}`)
     }
     next();
-}
+};
 
 module.exports.isReviewAuthor = async (req, res, next) => {
     const {id, reviewId} = req.params;
@@ -39,7 +50,7 @@ module.exports.isReviewAuthor = async (req, res, next) => {
         return res.redirect(`/posts/${id}`)
     }
     next();
-}
+};
 
 module.exports.validateReview = (req, res, next) => {
     const {err} = reviewSchema.validate(req.body);
@@ -50,4 +61,4 @@ module.exports.validateReview = (req, res, next) => {
         next();
     }
 
-}
+};

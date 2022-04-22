@@ -1,22 +1,28 @@
 <% layout('layout/boilerplate') %>
 
-<h1>Welcome <%= user.name %></h1>
+<h1>Welcome, <%= user.name %></h1>
 
-<h3 class="">Your total post's<%= posts.length%><h3>
+<h3 class="">Your total post's:  <%= posts.length%><h3>
 
-<div class="col-md-6">
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-6">
+            <% posts.forEach(function(post){%>
+                <ul>
+                    <div class="card" style="width: 30rem;">
+                        <div class="card-body">
+                            <h4 class="card-title"><%= post.title%></h4>
+                            <img src="<%=post.images[0].url%>" class="d-block w-100" alt="">
+                            
+                            <p class="card-text text-muted mt-4"><%= post.description%></p>
+                            <a href="/posts/<%=post._id%>" class="card-link">See More</a>
+                        </div>
+                    </div>
+                </ul>
+                <%})%>
+
+        </div>
+    </div>
     
-    <% posts.forEach(function(post){%>
-        <ul>
-            <li>
-                <h4><%= post.title%></h4>
-                <h5><%= post.description%></h5>
-                
-                <img src="<%=post.images[0].url%>" class="d-block w-100" alt="">
-                    
-                <h5>Posted: <%=post._id.getTimestamp()%></h5>
-            </li>
-        </ul>
-    <%})%>
 
 </div>
