@@ -1,3 +1,22 @@
 <% layout('layout/boilerplate') %>
 
-<h1>Welcome <%= currentUser.name %></h1>
+<h1>Welcome <%= user.name %></h1>
+
+<h3 class="">Your total post's<%= posts.length%><h3>
+
+<div class="col-md-6">
+    
+    <% posts.forEach(function(post){%>
+        <ul>
+            <li>
+                <h4><%= post.title%></h4>
+                <h5><%= post.description%></h5>
+                
+                <img src="<%=post.images[0].url%>" class="d-block w-100" alt="">
+                    
+                <h5>Posted: <%=post._id.getTimestamp()%></h5>
+            </li>
+        </ul>
+    <%})%>
+
+</div>

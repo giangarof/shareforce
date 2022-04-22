@@ -15,6 +15,10 @@ ImageSchema.virtual('thumbnail').get(function() {
 
 const Post = new Schema({
     author: {
+        id: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
         type: Schema.Types.ObjectId,
         ref: 'User'
     },

@@ -16,10 +16,10 @@ const {
 
 router.get('/', catchAsync(postCtrl.index));
 router.post('/', isLoggedIn, upload.array('image'), validatePost, catchAsync (postCtrl.create));
-router.get('/profile', postCtrl.profile);
+router.get('/profile/:id', postCtrl.profile);
 router.get('/new', isLoggedIn, postCtrl.new);
 
-router.get('/:id', catchAsync (postCtrl.findOne));
+router.get('/:id', catchAsync(postCtrl.findOne));
 router.get('/:id/update', isLoggedIn, isAuthor, catchAsync (postCtrl.updateForm));
 router.put('/:id', isLoggedIn, isAuthor, upload.array('image'), validatePost, catchAsync (postCtrl.submitUpdate));
 router.delete('/:id', isLoggedIn, isAuthor, catchAsync (postCtrl.delete));

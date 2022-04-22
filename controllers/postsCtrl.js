@@ -1,9 +1,23 @@
 const Post = require('../models/modelPost');
+const User = require('../models/modelUser')
 const {cloudinary} = require('../cloudinary/config');
 
 module.exports.profile = (req, res) => {
-    res.render('profile')
-}
+    User.findById(req.params.id, function(err, foundUser) {
+        if(err) {
+            req.flash("error", "Something went wrong.");
+            return res.redirect("/");
+        }
+        console.log(foundUser._id)
+        Post.find().where('author').equals(foundUser).exec(function(err, posts){
+            if(err) {
+                req.flash("error", "Something went wrong.");
+                return res.redirect("/");
+            } 
+            res.render("profile", {user: foundUser, posts: posts});
+        })
+    })
+};
 
 module.exports.index = async (req,res) => {
     const posts = await Post.find({});
