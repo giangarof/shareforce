@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
+const db_url = process.env.DBCONNECT || 'mongodb://localhost:27017/shareforce';
 
-mongoose.connect('mongodb://localhost:27017/shareforce', {
+mongoose.connect(db_url, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+    useUnifiedTopology: true})
+    .then(() => console.log('connected with mongodb'))
+    .catch((error) => console.error(error))
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, "connection error:"))

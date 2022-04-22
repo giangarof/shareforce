@@ -10,6 +10,8 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const passportLocal = require('passport-local');
+const mongoSanitize = require('express-mongo-sanitize');
+const MongoStore = require('connect-mongo');
 
 const ExpressError = require('./utils/ExpressError');;
 
@@ -29,13 +31,29 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(mongoSanitize());
+
+const dbUrl = process.env.DBCONNECT || 'mongodb://localhost:27017/shareforce';
+const secret = process.env.DBSECRET;
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60
+})
+
+store.on('error', function(e) {
+    console.log('error found', e)
+})
 
 const sessionConfig = {
-    secret: '1234',
+    store,
+    name:'session',
+    secret,
     resave: false,
     saveUninitilized: true,
     cookie: {
         httpOnly: true,
+        //secure: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -58,7 +76,6 @@ app.use((req, res, next) => {
 
 app.use('/posts', postRoutes);
 app.use('/posts/:id/review', reviewRoutes);
-
 app.use('/', userRoutes);
 
 app.get('/', (req,res) => {
