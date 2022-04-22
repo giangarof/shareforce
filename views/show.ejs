@@ -13,12 +13,12 @@
             </div>
             <%if (posts.images.length > 1) { %>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
                 </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
                 </button>
             <%}%>
           </div>
@@ -45,10 +45,18 @@
             </div>
           </div>
           
-          <div class="mb-3 mt-3">
-            <button class="btn btn-success"><i class="fa-solid fa-thumbs-up"></i></button>
-            <button class="btn btn-danger"><i class="fa-solid fa-thumbs-down"></i></button>
+          <% if(currentUser){%>
+          <div class="mb-3 mt-3 row row-cols-lg-auto g-3 align-items-center">
+            <form action="/posts/<%=posts._id%>/like" method="POST" id="likes-area" class="w-200 align-items-center">
+                <button class="btn btn-success"><i class="fa-solid fa-thumbs-up"></i></button>
+                <p>People who likes: <%= posts.likes.length %></p>
+            </form>
+            <form action="/posts/<%=posts._id%>/dislike" method="POST" id="likes-area">
+                <button class="btn btn-danger"><i class="fa-solid fa-thumbs-down"></i></button>
+                <p>People who dislikes: <%= posts.dislikes.length %></p>
+            </form>
           </div>
+        <%}%>
 
     </div>
     <div class="col-6">
@@ -81,3 +89,4 @@
         <%}%>
     </div>
 </div>
+

@@ -23,7 +23,8 @@ router.get('/:id', catchAsync (postCtrl.findOne));
 router.get('/:id/update', isLoggedIn, isAuthor, catchAsync (postCtrl.updateForm));
 router.put('/:id', isLoggedIn, isAuthor, upload.array('image'), validatePost, catchAsync (postCtrl.submitUpdate));
 router.delete('/:id', isLoggedIn, isAuthor, catchAsync (postCtrl.delete));
-
+router.post('/:id/like', isLoggedIn, catchAsync(postCtrl.userLike))
+router.post('/:id/dislike', isLoggedIn, catchAsync(postCtrl.userDislike))
 
 
 module.exports = router;

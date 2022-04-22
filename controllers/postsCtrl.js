@@ -73,3 +73,67 @@ module.exports.delete = async (req,res) => {
     req.flash('success', 'Your post has been deleted!')
     res.redirect('/posts');
 }
+
+module.exports.userLike = async (req, res) => {
+    Post.findById(req.params.id, (err, foundCont) => {
+        if(err){
+            console.log(err);
+            return res.redirect('/posts/')
+        }
+
+        const liked = foundCont.likes.some((like) => {
+            return like.equals(req.user._id);
+        });
+
+        const disliked = foundCont.dislikes.some((noLike) => {
+            return noLike.equals(req.user._id);
+        });
+
+        if(liked) {
+            foundCont.likes.pull(req.user._id);
+        } else {
+            foundCont.dislikes.pull(req.user._id);
+            foundCont.likes.push(req.user);
+        }
+
+        foundCont.save((err) => {
+            if(err){
+                console.log(err);
+                return res.redirect('/posts/');
+            }
+            return res.redirect('/posts/' + foundCont._id);
+        })
+    })
+}
+
+module.exports.userDislike = async (req, res) => {
+    Post.findById(req.params.id, (err, foundCont) => {
+        if(err){
+            console.log(err);
+            return res.redirect('/posts/')
+        }
+
+        const liked = foundCont.likes.some((like) => {
+            return like.equals(req.user._id);
+        });
+
+        const disliked = foundCont.dislikes.some((noLike) => {
+            return noLike.equals(req.user._id);
+        });
+
+        if(disliked) {
+            foundCont.dislikes.pull(req.user._id);
+        } else {
+            foundCont.likes.pull(req.user._id);
+            foundCont.dislikes.push(req.user);
+        }
+
+        foundCont.save((err) => {
+            if(err){
+                console.log(err);
+                return res.redirect('/posts/');
+            }
+            return res.redirect('/posts/' + foundCont._id);
+        })
+    })
+}
