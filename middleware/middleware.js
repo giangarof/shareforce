@@ -1,7 +1,7 @@
 const Post = require('../models/modelPost')
 const User = require('../models/modelUser')
 const Review = require('../models/modelReview')
-const ExpressError = require('../utils/ExpressError');
+const ExpressError = require('../utils/expressError');
 const { postSchema, reviewSchema } = require('../utils/schema');
 
 module.exports.isProfile = async (req,res, next) => {
