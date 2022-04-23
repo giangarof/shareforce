@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
 const dbUrl = process.env.DBCONNECT || 'mongodb://127.0.0.1:27017/shareforce';
-const secret = process.env.DBSECRET || 'gggarof';
+const secret = process.env.DBSECRET || 'gZwNHayY2ebxSrFY';
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     secret,
