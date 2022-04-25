@@ -33,7 +33,7 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
-const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/shareforce';
+const dbUrl = process.env.DB_URL || 'mongodb://127.0.0.1:27017/shareforce';
 const secret = process.env.SECRET || 'SECRET';
 
 const store = MongoStore.create({
