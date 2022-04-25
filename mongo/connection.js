@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const db_url = process.env.DBCONNECT || 'mongodb://localhost:27017/shareforce';
+const db_url = process.env.DB_URL || 'mongodb://localhost:27017/shareforce';
 
 mongoose.connect(db_url, {
     useNewUrlParser: true,
