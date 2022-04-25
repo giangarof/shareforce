@@ -22,7 +22,7 @@ const User = require('./models/modelUser');
 
 const db = require('./mongo/connection');
 const app = express();
-const PORT = process.env.port || 3000;
+const PORT = process.env.PORT || 3000;
 
 app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
@@ -33,8 +33,9 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
-const dbUrl = process.env.DBCONNECT || 'mongodb://localhost:27017/shareforce';
-const secret = process.env.DBSECRET || 'gZwNHayY2ebxSrFY';
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/shareforce';
+const secret = process.env.SECRET || 'SECRET';
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     secret,
