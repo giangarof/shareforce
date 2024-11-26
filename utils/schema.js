@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi'
 
-module.exports.postSchema = Joi.object({
+const postSchema = Joi.object({
     post: Joi.object({
         title: Joi.string().required(),
         description: Joi.string().required(),
@@ -9,8 +9,12 @@ module.exports.postSchema = Joi.object({
     deleteImages: Joi.array()
 });
 
-module.exports.reviewSchema = Joi.object({
+const reviewSchema = Joi.object({
     review: Joi.object({
         body: Joi.string().required()
     }).required()
 });
+
+export {
+    postSchema, reviewSchema
+}

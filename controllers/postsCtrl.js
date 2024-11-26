@@ -1,8 +1,8 @@
-const Post = require('../models/modelPost');
-const User = require('../models/modelUser')
-const {cloudinary} = require('../cloudinary/config');
+import Post from '../models/modelPost.js';
+import User from '../models/modelUser.js'
+import {cloudinary} from '../cloudinary/config.js';
 
-module.exports.profile = (req, res) => {
+const profile = (req, res) => {
     User.findById(req.params.id, function(err, foundUser) {
         if(err) {
             req.flash("error", "Something went wrong.");
@@ -19,16 +19,16 @@ module.exports.profile = (req, res) => {
     })
 };
 
-module.exports.index = async (req,res) => {
+const index = async (req,res) => {
     const posts = await Post.find({});
     res.render('posts', { posts });
 };
 
-module.exports.new = (req,res) => {
+const newRender = (req,res) => {
     res.render('new')
 }
 
-module.exports.create = async (req,res) => {
+const create = async (req,res) => {
     const post = new Post(req.body.post);
     post.images = req.files.map(f => ({url: f.path, filename: f.filename}))
     post.author = req.user._id;
@@ -37,7 +37,7 @@ module.exports.create = async (req,res) => {
     res.redirect(`/posts/${post._id}`);
 }
 
-module.exports.findOne = async (req,res) => {
+const findOne = async (req,res) => {
     const posts = await Post.findById(req.params.id).populate({
         path:'reviews',
         populate: {
@@ -52,7 +52,7 @@ module.exports.findOne = async (req,res) => {
     res.render('show', { posts });
 }
 
-module.exports.updateForm = async (req, res) => {
+const updateForm = async (req, res) => {
     const {id} = req.params;
     const posts = await Post.findById(id);
     if(!posts){
@@ -62,7 +62,7 @@ module.exports.updateForm = async (req, res) => {
     res.render('edit', { posts });
 }
 
-module.exports.submitUpdate = async (req,res) => {
+const submitUpdate = async (req,res) => {
     const {id} = req.params;
     const post = await Post.findByIdAndUpdate(id, {...req.body.post});
     const imgs = req.files.map(f => ({url: f.path, filename: f.filename}));
@@ -78,7 +78,7 @@ module.exports.submitUpdate = async (req,res) => {
     res.redirect(`/posts/${post._id}`);
 }
 
-module.exports.delete = async (req,res) => {
+const deletePost = async (req,res) => {
     const {id} = req.params;
     const post = await Post.findByIdAndDelete(id);
     for (let image of post.images) {
@@ -88,7 +88,7 @@ module.exports.delete = async (req,res) => {
     res.redirect('/posts');
 }
 
-module.exports.userLike = async (req, res) => {
+const userLike = async (req, res) => {
     Post.findById(req.params.id, (err, foundCont) => {
         if(err){
             console.log(err);
@@ -120,7 +120,7 @@ module.exports.userLike = async (req, res) => {
     })
 }
 
-module.exports.userDislike = async (req, res) => {
+const userDislike = async (req, res) => {
     Post.findById(req.params.id, (err, foundCont) => {
         if(err){
             console.log(err);
@@ -150,4 +150,17 @@ module.exports.userDislike = async (req, res) => {
             return res.redirect('/posts/' + foundCont._id);
         })
     })
+}
+
+export {
+    profile,
+    index,
+    newRender,
+    create,
+    findOne,
+    updateForm,
+    submitUpdate,
+    deletePost,
+    userLike,
+    userDislike
 }

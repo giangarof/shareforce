@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+// const Schema = mongoose.Schema;
 
-const Review = new Schema({
+const ReviewSchema = new mongoose.Schema({
     author: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
     body: String,
@@ -11,4 +11,6 @@ const Review = new Schema({
     dislike: Number,
 });
 
-module.exports = mongoose.model('Review', Review);
+const Review = mongoose.model('Review', ReviewSchema);
+
+export default Review;

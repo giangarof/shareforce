@@ -1,23 +1,23 @@
-const express = require('express');
-const methodOverride = require('method-override');
+import express from 'express'
+import methodOverride from 'method-override'
 
-const reviewCtrl = require('../controllers/reviewCtrl')
-const catchAsync = require('../utils/catchAsync');
+import {create, deleteReview} from '../controllers/reviewCtrl.js'
+import catchAsync from '../utils/catchAsync.js';
 
-const Review = require('../models/modelReview');
-const Post = require('../models/modelPost');
-const {
+import Review from '../models/modelReview.js';
+import Post from '../models/modelPost.js';
+import {
     isLoggedIn,
     isAuthor,
     isReviewAuthor,
     validatePost,
     validateReview,
-    } = require('../middleware/middleware')
+    } from '../middleware/middleware.js'
 
 const router = express.Router({mergeParams:true});
 
-router.post('/', isLoggedIn, validateReview, catchAsync(reviewCtrl.create));
+router.post('/', isLoggedIn, validateReview, catchAsync(create));
 
-router.delete('/:reviewId', isLoggedIn, isReviewAuthor, catchAsync(reviewCtrl.delete))
+router.delete('/:reviewId', isLoggedIn, isReviewAuthor, catchAsync(deleteReview))
 
-module.exports = router
+export default router

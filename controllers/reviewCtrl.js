@@ -1,7 +1,7 @@
-const Review = require('../models/modelReview');
-const Post = require('../models/modelPost');
+import Review from'../models/modelReview.js';
+import Post from'../models/modelPost.js';
 
-module.exports.create = async(req, res) => {
+const create = async(req, res) => {
     const post = await Post.findById(req.params.id);
     const review = new Review(req.body.review);
     review.author = req.user._id;
@@ -12,10 +12,15 @@ module.exports.create = async(req, res) => {
     res.redirect(`/posts/${post._id}`)
 }
 
-module.exports.delete = async(req,res) => {
+const deleteReview = async(req,res) => {
     const {id, reviewId } = req.params;
     await Post.findByIdAndUpdate(id, {$pull: {review: reviewId}})
     await Review.findByIdAndDelete(reviewId);
     req.flash('success', 'Comment deleted!')
     res.redirect(`/posts/${id}`)
+}
+
+export {
+    create,
+    deleteReview
 }

@@ -1,10 +1,10 @@
-const { string } = require('joi');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const review = require('./modelReview');
-const user = require('./modelUser');
+// const { string } = require('joi');
+import mongoose from 'mongoose';
+// const Schema = mongoose.Schema;
+import Review from './modelReview.js'
+import User from './modelUser.js'
 
-const ImageSchema = new Schema({
+const ImageSchema = new mongoose.Schema({
     url: String,
     filename:String
 });
@@ -13,13 +13,13 @@ ImageSchema.virtual('thumbnail').get(function() {
     return this.url.replace('/upload', '/upload/w_250');
 })
 
-const Post = new Schema({
+const PostSchema = new mongoose.Schema({
     author: {
         id: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
     title: String,
@@ -27,32 +27,34 @@ const Post = new Schema({
     description: String,
     likes: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         }
     ],
     dislikes: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         }
     ],
     reviews: [
         {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Review'
         }
     ],
 });
 
-Post.post('findOneAndDelete', async function(doc){
-    if(doc){
-        await review.deleteMany({
-            _id: {
-                $in: doc.reviews
-            }
-        })
-    }
-})
+// Post.post('findOneAndDelete', async function(doc){
+//     if(doc){
+//         await review.deleteMany({
+//             _id: {
+//                 $in: doc.reviews
+//             }
+//         })
+//     }
+// })
 
-module.exports = mongoose.model('Post', Post);
+const Post = mongoose.model('Post', PostSchema);
+
+export default Post

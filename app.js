@@ -1,28 +1,42 @@
+import dotenv from 'dotenv'
+
 if(process.env.NODE_ENV !== 'production'){
-    require('dotenv').config();
+    dotenv.config()
+    // require('dotenv').config();
 }
+import express from 'express'
+import session from 'express-session';
+import flash from 'connect-flash'
+import passport from 'passport';
+import passportLocal from 'passport-local';
+import mongoSanitize from 'express-mongo-sanitize';
+import MongoStore from 'connect-mongo';
+import path from 'path';
+import methodOverride from 'method-override';
+import ejsMate from 'ejs-mate'
 
-const express = require('express');
-const path = require('path');
-const methodOverride = require('method-override');
-const ejsMate = require('ejs-mate');
-const session = require('express-session');
-const flash = require('connect-flash');
-const passport = require('passport');
-const passportLocal = require('passport-local');
-const mongoSanitize = require('express-mongo-sanitize');
-const MongoStore = require('connect-mongo');
+// const express = require('express');
+// const path = require('path');
+// const methodOverride = require('method-override');
+// const ejs = require('ejs');
+// const session = require('express-session');
+// const flash = require('connect-flash');
+// const passport = require('passport');
+// const passportLocal = require('passport-local');
+// const mongoSanitize = require('express-mongo-sanitize');
+// const MongoStore = require('connect-mongo');
 
-const ExpressError = require('./utils/expressError');;
+import ExpressError from './utils/expressError.js';
 
-const userRoutes = require('./routes/user')
-const postRoutes = require('./routes/posts');
-const reviewRoutes = require('./routes/reviews');
-const User = require('./models/modelUser');
+import user from './routes/user.js'
+import post from './routes/posts.js';
+import review from './routes/reviews.js';
+import User from './models/modelUser.js';
 
-const db = require('./mongo/connection');
+import db from './mongo/connection.js'
 const app = express();
 const PORT = process.env.PORT || 3000;
+const __dirname = path.resolve();
 
 app.engine('ejs', ejsMate)
 app.set('view engine', 'ejs');
@@ -75,9 +89,9 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use('/posts', postRoutes);
-app.use('/posts/:id/review', reviewRoutes);
-app.use('/', userRoutes);
+app.use('/posts', post);
+app.use('/posts/:id/review', review);
+app.use('/', user);
 
 app.get('/', (req,res) => {
     res.render('home');

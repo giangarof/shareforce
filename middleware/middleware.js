@@ -1,10 +1,11 @@
-const Post = require('../models/modelPost')
-const User = require('../models/modelUser')
-const Review = require('../models/modelReview')
-const ExpressError = require('../utils/expressError');
-const { postSchema, reviewSchema } = require('../utils/schema');
+import Post from '../models/modelPost.js'
+import User from '../models/modelUser.js'
+import Review from '../models/modelReview.js'
+import ExpressError from '../utils/expressError.js';
+import { postSchema, reviewSchema } from '../utils/schema.js';
 
-module.exports.isProfile = async (req,res, next) => {
+
+const isProfile = async (req,res, next) => {
     const {id} = req.params;
     const user = await User.findById(id);
     if(!user.equals(req.user._id)){
@@ -14,17 +15,18 @@ module.exports.isProfile = async (req,res, next) => {
     next();
 }
 
-module.exports.isLoggedIn = (req,res,next) => {
-    console.log('user', req.user)
+const isLoggedIn = (req,res,next) => {
+    console.log('user', req.isAuthenticated())
     if(!req.isAuthenticated()){
         req.session.returnTo = req.originalUrl;
         req.flash('error', 'You must sign in first')
         return res.redirect('/login')
     }
+    // console.log(req)
     next();
 };
 
-module.exports.validatePost = (req, res, next) => {
+const validatePost = (req, res, next) => {
     const { error } = postSchema.validate(req.body);
     if(error){
         const msg = error.details.map(el => el.message).join(',')
@@ -32,7 +34,7 @@ module.exports.validatePost = (req, res, next) => {
     } else{ next() }
 };
 
-module.exports.isAuthor = async (req, res, next) => {
+const isAuthor = async (req, res, next) => {
     const {id} = req.params;
     const post = await Post.findById(id);
     if(!post.author.equals(req.user._id)){
@@ -42,7 +44,7 @@ module.exports.isAuthor = async (req, res, next) => {
     next();
 };
 
-module.exports.isReviewAuthor = async (req, res, next) => {
+const isReviewAuthor = async (req, res, next) => {
     const {id, reviewId} = req.params;
     const review = await Review.findById(reviewId);
     if(!review.author.equals(req.user._id)){
@@ -52,7 +54,7 @@ module.exports.isReviewAuthor = async (req, res, next) => {
     next();
 };
 
-module.exports.validateReview = (req, res, next) => {
+const validateReview = (req, res, next) => {
     const {err} = reviewSchema.validate(req.body);
     if(err){
         const msg = error.details.map(el => el.message).join(',')
@@ -62,3 +64,10 @@ module.exports.validateReview = (req, res, next) => {
     }
 
 };
+
+export {
+    validatePost, validateReview,
+    isAuthor, isProfile, isLoggedIn, isReviewAuthor
+
+
+}

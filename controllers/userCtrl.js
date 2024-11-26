@@ -1,10 +1,10 @@
-const User = require('../models/modelUser');
+import User from '../models/modelUser.js';
 
-module.exports.renderRegister = (req, res) => {
+const renderRegister = (req, res) => {
     res.render('user/register')
 };
 
-module.exports.createUser = async(req,res) => {
+const createUser = async(req,res) => {
     try {
         const {email, name, password, username} = req.body;
         const newUser = new User({email, username, name});
@@ -20,19 +20,28 @@ module.exports.createUser = async(req,res) => {
     }
 }
 
-module.exports.loginForm = (req, res) => {
+const loginForm = (req, res) => {
     res.render('user/login')
 };
 
-module.exports.submitLogin = (req, res) => {
+const submitLogin = (req, res) => {
     req.flash('success', `Welcome back ${req.body.username}`);
     const redirectUrl = req.session.returnTo || '/'
     delete req.session.returnTo;
+    console.log(res)
     res.redirect(redirectUrl);
 }
 
-module.exports.logout = (req,res) => {
+const logout = (req,res) => {
     req.logout();
     req.flash('success', 'See you later!')
     res.redirect('/posts');
+}
+
+export {
+    renderRegister,
+    createUser,
+    loginForm,
+    submitLogin,
+    logout
 }
